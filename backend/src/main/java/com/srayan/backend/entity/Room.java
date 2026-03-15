@@ -16,7 +16,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, unique = true)
-    private String roomcode;
+    private String roomCode;
     @ManyToOne
     @JoinColumn(name = "host_id", nullable = false)
     private User host;

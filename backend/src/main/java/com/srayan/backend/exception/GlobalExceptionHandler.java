@@ -6,8 +6,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.management.relation.RelationSupport;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
@@ -23,5 +21,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUsernameNotFound(UsernameNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(GameAlreadyStartedException.class)
+    public ResponseEntity<String> handleGameAlreadyStarted(GameAlreadyStartedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PlayerLimitReachedException.class)
+    public ResponseEntity<String> handlePlayerLimitReached(PlayerLimitReachedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RoomNotFoundException.class)
+    public ResponseEntity<String> handleRoomNotFound(RoomNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserAlreadyInRoomException.class)
+    public ResponseEntity<String> handleUserAlreadyInRoom(UserAlreadyInRoomException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

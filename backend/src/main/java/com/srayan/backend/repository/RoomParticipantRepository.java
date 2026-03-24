@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface RoomParticipantRepository extends JpaRepository<RoomParticipant, Long> {
     List<RoomParticipant> findByRoomOrderByTotalScoreDesc(Room room);
     Optional<RoomParticipant> findByRoomAndPlayer(Room room, User player);
+    int countByRoom(Room room);
 }

@@ -22,6 +22,8 @@ public class RoomParticipant {
     @ManyToOne
     @JoinColumn(name = "player_id", nullable = false)
     private User player;
+    @Column(nullable = false)
+    private Role role;
     private int totalScore = 0;
     private Instant joinedAt;
 

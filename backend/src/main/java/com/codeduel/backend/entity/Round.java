@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,12 +30,13 @@ public class Round {
     private String problemDescription;
     @Column(nullable = false)
     private int timeLimitSeconds;
-    @Column(nullable = false)
-    private int totalTestCases;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoundStatus status;
+    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestCase> testCases = new ArrayList<>();
     private Instant createdAt;
+    private Instant startTime;
 
     @PrePersist
     protected void onCreate() {

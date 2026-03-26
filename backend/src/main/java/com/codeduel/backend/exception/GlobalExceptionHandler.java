@@ -42,4 +42,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUserAlreadyInRoom(UserAlreadyInRoomException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+
+    @ExceptionHandler(NotHostException.class)
+    public ResponseEntity<String> handleNotHost(NotHostException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RoundNotFoundException.class)
+    public ResponseEntity<String> handleRoundNotFound(RoundNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 }

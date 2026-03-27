@@ -28,10 +28,8 @@ public class Submission {
     private String language;
     @Column(nullable = false)
     private int testCasesPassed;
-    @Column(nullable = false)
-    private int timeTakenSeconds;
+    private Integer timeTakenSeconds;
     private int pointsEarned = 0;
-    private boolean isCorrect = false;
     private Instant submittedAt;
 
     @PrePersist

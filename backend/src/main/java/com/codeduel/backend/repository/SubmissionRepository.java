@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     List<Submission> findByRoundAndUser(Round round, User user);
-    Optional<Submission> findByRoundAndUserOrderByPointsEarnedDesc(Round round, User user);
+    List<Submission> findByRound(Round round);
 }

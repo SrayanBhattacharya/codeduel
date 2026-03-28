@@ -13,6 +13,7 @@ import com.codeduel.backend.repository.RoomRepository;
 import com.codeduel.backend.repository.RoundRepository;
 import com.codeduel.backend.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class RoundService {
     private final RoomParticipantRepository roomParticipantRepository;
     private final TaskScheduler taskScheduler;
     private final SubmissionService submissionService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     private RoundResponse mapToResponse(Round round) {
         return new RoundResponse(round.getId(), round.getRoundNumber(), round.getProblemTitle(), round.getProblemDescription(), round.getTimeLimitSeconds(), round.getStatus().name(), round.getTestCases().stream().map(tc -> new TestCaseResponse(tc.getId(), tc.getInput(), tc.getExpectedOutput())).toList());
@@ -102,6 +104,11 @@ public class RoundService {
         );
 
         roundRepository.save(round);
+
+        messagingTemplate.convertAndSend(
+                "/topic/rooms/" + roomCode + "/round-started",
+                mapToResponse(round)
+        );
 
         return mapToResponse(round);
     }

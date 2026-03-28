@@ -1,5 +1,7 @@
 package com.codeduel.backend.service;
 
+import com.codeduel.backend.dto.LeaderboardEntryResponse;
+import com.codeduel.backend.dto.RoundResponse;
 import com.codeduel.backend.dto.SubmissionResponse;
 import com.codeduel.backend.dto.SubmitCodeRequest;
 import com.codeduel.backend.entity.*;
@@ -11,6 +13,7 @@ import com.codeduel.backend.repository.SubmissionRepository;
 import com.codeduel.backend.util.PistonClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,7 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final PistonClient pistonClient;
     private final RoomParticipantRepository roomParticipantRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public SubmissionResponse submit(String roomCode, Long roundId, SubmitCodeRequest request) {
         Round round = roundRepository.findById(roundId)
@@ -113,5 +117,33 @@ public class SubmissionService {
 
         round.setStatus(RoundStatus.FINISHED);
         roundRepository.save(round);
+
+        String roomCode = round.getRoom().getRoomCode();
+
+        messagingTemplate.convertAndSend(
+                "/topic/rooms/" + roomCode + "/round-finished",
+                new RoundResponse(
+                        round.getId(),
+                        round.getRoundNumber(),
+                        round.getProblemTitle(),
+                        round.getProblemDescription(),
+                        round.getTimeLimitSeconds(),
+                        round.getStatus().name(),
+                        List.of()
+                )
+        );
+
+        List<LeaderboardEntryResponse> leaderboard = players.stream()
+                .sorted((a, b) -> b.getTotalScore() - a.getTotalScore())
+                .map(p -> new LeaderboardEntryResponse(
+                        p.getPlayer().getUsername(),
+                        p.getTotalScore()
+                ))
+                .toList();
+
+        messagingTemplate.convertAndSend(
+                "/topic/rooms/" + roomCode + "/leaderboard",
+                leaderboard
+        );
     }
 }

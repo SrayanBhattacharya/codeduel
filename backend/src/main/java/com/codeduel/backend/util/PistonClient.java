@@ -2,8 +2,11 @@ package com.codeduel.backend.util;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -16,8 +19,10 @@ public class PistonClient {
 
     @PostConstruct
     public void init() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         this.restClient = RestClient.builder()
                 .baseUrl(pistonApiUrl)
+                .requestFactory(factory)
                 .build();
     }
 
@@ -31,6 +36,7 @@ public class PistonClient {
 
         PistonResponse response = restClient.post()
                 .uri("/api/v2/execute")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
                 .body(PistonResponse.class);

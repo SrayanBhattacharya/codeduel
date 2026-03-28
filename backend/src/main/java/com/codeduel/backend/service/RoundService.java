@@ -13,10 +13,12 @@ import com.codeduel.backend.repository.RoomRepository;
 import com.codeduel.backend.repository.RoundRepository;
 import com.codeduel.backend.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -25,6 +27,8 @@ public class RoundService {
     private final RoomRepository roomRepository;
     private final RoundRepository roundRepository;
     private final RoomParticipantRepository roomParticipantRepository;
+    private final TaskScheduler taskScheduler;
+    private final SubmissionService submissionService;
 
     private RoundResponse mapToResponse(Round round) {
         return new RoundResponse(round.getId(), round.getRoundNumber(), round.getProblemTitle(), round.getProblemDescription(), round.getTimeLimitSeconds(), round.getStatus().name(), round.getTestCases().stream().map(tc -> new TestCaseResponse(tc.getId(), tc.getInput(), tc.getExpectedOutput())).toList());
@@ -88,6 +92,14 @@ public class RoundService {
 
         round.setStartTime(Instant.now());
         round.setStatus(RoundStatus.ACTIVE);
+
+        Instant expiryTime = round.getStartTime()
+                        .plusSeconds(round.getTimeLimitSeconds());
+
+        taskScheduler.schedule(
+                () -> submissionService.finishRound(round.getId()),
+                expiryTime
+        );
 
         roundRepository.save(round);
 

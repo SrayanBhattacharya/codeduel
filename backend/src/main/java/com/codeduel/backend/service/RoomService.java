@@ -1,6 +1,7 @@
 package com.codeduel.backend.service;
 
 import com.codeduel.backend.dto.CreateRoomRequest;
+import com.codeduel.backend.dto.LeaderboardEntryResponse;
 import com.codeduel.backend.dto.ParticipantResponse;
 import com.codeduel.backend.dto.RoomResponse;
 import com.codeduel.backend.entity.*;
@@ -95,5 +96,15 @@ public class RoomService {
                 .toList();
 
         return new RoomResponse(room.getId(), room.getRoomCode(), room.getHost().getUsername(), room.getStatus().name(), room.getMaxPlayers(), participants);
+    }
+
+    public List<LeaderboardEntryResponse> getLeaderboard(String roomCode) {
+        Room room = roomRepository.findByRoomCode(roomCode)
+                .orElseThrow(() -> new RoomNotFoundException("Room not found with code: " + roomCode));
+
+        return roomParticipantRepository.findByRoomOrderByTotalScoreDesc(room)
+                .stream()
+                .map(p -> new LeaderboardEntryResponse(p.getPlayer().getUsername(), p.getTotalScore()))
+                .toList();
     }
 }

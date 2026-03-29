@@ -1,8 +1,10 @@
+// src/pages/RoomPage.tsx
+
 import axiosInstance from "@/api/axiosInstance"
 import { useAuth } from "@/context/AuthContext"
 import type { Room, Round } from "@/types"
 import { Client } from "@stomp/stompjs"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import SockJS from "sockjs-client"
 
@@ -16,7 +18,6 @@ export default function RoomPage() {
   const [starting, setStarting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Round creation form
   const [problemTitle, setProblemTitle] = useState("")
   const [problemDescription, setProblemDescription] = useState("")
   const [timeLimitSeconds, setTimeLimitSeconds] = useState(300)
@@ -24,9 +25,15 @@ export default function RoomPage() {
     { input: "", expectedOutput: "" },
   ])
 
+  const isHostRef = useRef(false)
+
   const isHost = room?.participants.some(
     (p) => p.username === user?.username && p.role === "ROLE_HOST"
   )
+
+  useEffect(() => {
+    isHostRef.current = isHost ?? false
+  }, [isHost])
 
   // Fetch room on load
   useEffect(() => {
@@ -43,7 +50,7 @@ export default function RoomPage() {
     fetchRoom()
   }, [code])
 
-  // WebSocket connection
+  // WebSocket
   useEffect(() => {
     const token = localStorage.getItem("token")
     const client = new Client({
@@ -57,10 +64,14 @@ export default function RoomPage() {
           setRoom(updatedRoom)
         })
 
-        // Round started — navigate everyone to game
+        // Round started
         client.subscribe(`/topic/rooms/${code}/round-started`, (message) => {
           const round: Round = JSON.parse(message.body)
-          navigate(`/game/${code}`, { state: { round } })
+          if (isHostRef.current) {
+            navigate(`/leaderboard/${code}`)
+          } else {
+            navigate(`/game/${code}`, { state: { round } })
+          }
         })
       },
     })
@@ -105,7 +116,6 @@ export default function RoomPage() {
     setError(null)
 
     try {
-      // Create round
       const roundResponse = await axiosInstance.post(
         `/api/rooms/${code}/rounds`,
         {
@@ -115,8 +125,6 @@ export default function RoomPage() {
           testCases,
         }
       )
-
-      // Start round
       await axiosInstance.post(
         `/api/rooms/${code}/rounds/${roundResponse.data.id}/start`
       )
@@ -212,9 +220,7 @@ export default function RoomPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium">
-                  Time Limit (seconds)
-                </label>
+                <label className="text-sm font-medium">Time Limit</label>
                 <select
                   value={timeLimitSeconds}
                   onChange={(e) => setTimeLimitSeconds(Number(e.target.value))}

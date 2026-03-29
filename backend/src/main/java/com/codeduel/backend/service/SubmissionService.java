@@ -129,7 +129,8 @@ public class SubmissionService {
                         round.getProblemDescription(),
                         round.getTimeLimitSeconds(),
                         round.getStatus().name(),
-                        List.of()
+                        List.of(),
+                        round.getStartTime()
                 )
         );
 

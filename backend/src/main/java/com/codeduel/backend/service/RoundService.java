@@ -33,7 +33,7 @@ public class RoundService {
     private final SimpMessagingTemplate messagingTemplate;
 
     private RoundResponse mapToResponse(Round round) {
-        return new RoundResponse(round.getId(), round.getRoundNumber(), round.getProblemTitle(), round.getProblemDescription(), round.getTimeLimitSeconds(), round.getStatus().name(), round.getTestCases().stream().map(tc -> new TestCaseResponse(tc.getId(), tc.getInput(), tc.getExpectedOutput())).toList());
+        return new RoundResponse(round.getId(), round.getRoundNumber(), round.getProblemTitle(), round.getProblemDescription(), round.getTimeLimitSeconds(), round.getStatus().name(), round.getTestCases().stream().map(tc -> new TestCaseResponse(tc.getId(), tc.getInput(), tc.getExpectedOutput())).toList(), round.getStartTime());
     }
 
     private RoomParticipant getHostParticipant(Room room) {

@@ -53,6 +53,7 @@ export interface Round {
   timeLimitSeconds: number
   status: RoundStatus
   testCases: TestCase[]
+  startedAt: string | null
 }
 
 export interface Submission {

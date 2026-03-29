@@ -312,7 +312,7 @@ thumb
 sketch
 
 ### VisualStudioCode ###
-.vscode/*
+.vscode/
 
 # Local History for Visual Studio Code
 .history/

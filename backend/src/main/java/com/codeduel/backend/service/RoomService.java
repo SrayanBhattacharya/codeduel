@@ -18,7 +18,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -113,5 +115,35 @@ public class RoomService {
                 .filter(p -> p.getRole() != Role.ROLE_HOST)
                 .map(p -> new LeaderboardEntryResponse(p.getPlayer().getUsername(), p.getTotalScore()))
                 .toList();
+    }
+
+    @Transactional
+    public void leaveRoom(String code) {
+        User currentUser = (User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        Room room = roomRepository.findByRoomCode(code)
+                .orElseThrow(() -> new RoomNotFoundException("Room not found with code: " + code));
+
+        roomParticipantRepository.findByRoomAndPlayer(room, currentUser)
+                .ifPresent(roomParticipantRepository::delete);
+    }
+
+    public Optional<RoomResponse> getCurrentRoom() {
+        User currentUser = (User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return roomParticipantRepository.findActiveRoomByPlayer(currentUser)
+                .map(rp -> {
+                    Room room = rp.getRoom();
+                    List<ParticipantResponse> participants = roomParticipantRepository
+                            .findByRoomOrderByTotalScoreDesc(room)
+                            .stream()
+                            .map(p -> new ParticipantResponse(p.getPlayer().getId(), p.getPlayer().getUsername(), p.getRole()))
+                            .toList();
+                    return new RoomResponse(room.getId(), room.getRoomCode(), room.getHost().getUsername(), room.getStatus().name(), room.getMaxPlayers(), participants);
+                });
     }
 }

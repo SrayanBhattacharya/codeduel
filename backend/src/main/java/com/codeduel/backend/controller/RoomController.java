@@ -4,6 +4,7 @@ import com.codeduel.backend.dto.CreateRoomRequest;
 import com.codeduel.backend.dto.RoomResponse;
 import com.codeduel.backend.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,18 @@ public class RoomController {
     public ResponseEntity<RoomResponse> getRoom(@PathVariable String code) {
         RoomResponse roomResponse = roomService.getRoom(code);
         return ResponseEntity.status(HttpStatus.OK).body(roomResponse);
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<RoomResponse> getCurrentRoom() {
+        return roomService.getCurrentRoom()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
+
+    @DeleteMapping("/{code}/leave")
+    public ResponseEntity<Void> leaveRoom(@PathVariable String code) {
+        roomService.leaveRoom(code);
+        return ResponseEntity.noContent().build();
     }
 }

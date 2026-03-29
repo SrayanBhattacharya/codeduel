@@ -114,10 +114,25 @@ export default function LeaderboardPage() {
 
         <div className="mt-8 flex justify-center">
           <button
-            onClick={() => navigate("/lobby")}
+            onClick={() => navigate(`/room/${code}`)}
             className="rounded-lg bg-primary px-8 py-2.5 font-medium text-primary-foreground transition hover:opacity-90"
           >
+            Next Round
+          </button>
+        </div>
+
+        <div className="mt-8 flex justify-center gap-4">
+          <button
+            onClick={() => navigate("/lobby")}
+            className="rounded-lg border border-border px-8 py-2.5 font-medium transition hover:bg-accent"
+          >
             Back to Lobby
+          </button>
+          <button
+            onClick={() => navigate(`/room/${code}`)}
+            className="rounded-lg bg-primary px-8 py-2.5 font-medium text-primary-foreground transition hover:opacity-90"
+          >
+            Next Round
           </button>
         </div>
       </div>

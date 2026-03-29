@@ -3,7 +3,7 @@
 import axiosInstance from "@/api/axiosInstance"
 import { useAuth } from "@/context/AuthContext"
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 export default function LobbyPage() {
@@ -16,6 +16,22 @@ export default function LobbyPage() {
   const [joinError, setJoinError] = useState<string | null>(null)
   const [createLoading, setCreateLoading] = useState(false)
   const [joinLoading, setJoinLoading] = useState(false)
+
+  useEffect(() => {
+    const leaveCurrentRoom = async () => {
+      try {
+        const response = await axiosInstance.get("/api/rooms/current")
+        if (response.status === 200 && response.data.roomCode) {
+          await axiosInstance.delete(
+            `/api/rooms/${response.data.roomCode}/leave`
+          )
+        }
+      } catch {
+        // no active room, ignore
+      }
+    }
+    leaveCurrentRoom()
+  }, [])
 
   const handleCreate = async () => {
     setCreateError(null)

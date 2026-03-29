@@ -8,6 +8,7 @@ import com.codeduel.backend.entity.*;
 import com.codeduel.backend.exception.RoundNotActiceException;
 import com.codeduel.backend.exception.RoundNotFoundException;
 import com.codeduel.backend.repository.RoomParticipantRepository;
+import com.codeduel.backend.repository.RoomRepository;
 import com.codeduel.backend.repository.RoundRepository;
 import com.codeduel.backend.repository.SubmissionRepository;
 import com.codeduel.backend.util.PistonClient;
@@ -29,6 +30,7 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final PistonClient pistonClient;
     private final RoomParticipantRepository roomParticipantRepository;
+    private final RoomRepository roomRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
     public SubmissionResponse submit(String roomCode, Long roundId, SubmitCodeRequest request) {
@@ -117,6 +119,10 @@ public class SubmissionService {
 
         round.setStatus(RoundStatus.FINISHED);
         roundRepository.save(round);
+
+        Room room = round.getRoom();
+        room.setStatus(RoomStatus.WAITING);
+        roomRepository.save(room);
 
         String roomCode = round.getRoom().getRoomCode();
 

@@ -14,6 +14,7 @@ import com.codeduel.backend.repository.RoomRepository;
 import com.codeduel.backend.util.RoomCodeGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import java.util.List;
 public class RoomService {
     private final RoomParticipantRepository roomParticipantRepository;
     private final RoomRepository roomRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public RoomResponse createRoom(CreateRoomRequest request) {
@@ -82,7 +84,11 @@ public class RoomService {
                 .map(p -> new ParticipantResponse(p.getPlayer().getId(), p.getPlayer().getUsername(), p.getRole()))
                 .toList();
 
-        return new RoomResponse(room.getId(), room.getRoomCode(), room.getHost().getUsername(), room.getStatus().name(), room.getMaxPlayers(), participants);
+        RoomResponse roomResponse = new RoomResponse(room.getId(), room.getRoomCode(), room.getHost().getUsername(), room.getStatus().name(), room.getMaxPlayers(), participants);
+
+        messagingTemplate.convertAndSend("/topic/rooms/" + code + "/participants", roomResponse);
+
+        return roomResponse;
     }
 
     public RoomResponse getRoom(String code) {

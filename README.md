@@ -2,7 +2,7 @@
 
 A real-time multiplayer competitive coding platform inspired by Scribble.io. A host creates a room, sets a coding challenge, and players race to solve it live. Points are awarded based on correctness and speed. A live leaderboard updates after each round.
 
-🔗 **Live Demo**: [placeholder — add after deployment]
+🔗 **Live Demo**: https://codeduel-three.vercel.app/login
 
 ---
 

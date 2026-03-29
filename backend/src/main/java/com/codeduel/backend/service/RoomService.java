@@ -110,6 +110,7 @@ public class RoomService {
 
         return roomParticipantRepository.findByRoomOrderByTotalScoreDesc(room)
                 .stream()
+                .filter(p -> p.getRole() != Role.ROLE_HOST)
                 .map(p -> new LeaderboardEntryResponse(p.getPlayer().getUsername(), p.getTotalScore()))
                 .toList();
     }

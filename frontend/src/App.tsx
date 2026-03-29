@@ -1,21 +1,61 @@
-import { Button } from "@/components/ui/button"
+// src/App.tsx
 
-export function App() {
-  return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
-  )
+import { useAuth } from "@/context/AuthContext"
+import GamePage from "@/pages/GamePage"
+import LeaderboardPage from "@/pages/LeaderboardPage"
+import LobbyPage from "@/pages/LobbyPage"
+import LoginPage from "@/pages/LoginPage"
+import RegisterPage from "@/pages/RegisterPage"
+import RoomPage from "@/pages/RoomPage"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuth()
+  return isAuthenticated ? children : <Navigate to="/login" />
 }
 
-export default App
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        <Route
+          path="/lobby"
+          element={
+            <ProtectedRoute>
+              <LobbyPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/room/:code"
+          element={
+            <ProtectedRoute>
+              <RoomPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/game/:code"
+          element={
+            <ProtectedRoute>
+              <GamePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/leaderboard/:code"
+          element={
+            <ProtectedRoute>
+              <LeaderboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}

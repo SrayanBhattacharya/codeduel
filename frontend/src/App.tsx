@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext"
 import GamePage from "@/pages/GamePage"
+import HomePage from "@/pages/HomePage"
 import LeaderboardPage from "@/pages/LeaderboardPage"
 import LobbyPage from "@/pages/LobbyPage"
 import LoginPage from "@/pages/LoginPage"
@@ -18,6 +19,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 

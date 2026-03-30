@@ -16,6 +16,6 @@ public interface RoomParticipantRepository extends JpaRepository<RoomParticipant
     Optional<RoomParticipant> findByRoomAndPlayer(Room room, User player);
     List<RoomParticipant> findByRoomAndRole(Room room, Role role);
     int countByRoom(Room room);
-    @Query("SELECT rp FROM RoomParticipant rp WHERE rp.player = :player AND rp.room.status = com.codeduel.backend.entity.RoomStatus.WAITING")
+    @Query("SELECT rp FROM RoomParticipant rp WHERE rp.player = :player AND rp.room.status = com.codeduel.backend.entity.RoomStatus.WAITING ORDER BY rp.joinedAt DESC LIMIT 1")
     Optional<RoomParticipant> findActiveRoomByPlayer(@Param("player") User player);
 }

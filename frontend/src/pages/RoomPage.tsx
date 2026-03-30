@@ -24,6 +24,8 @@ export default function RoomPage() {
   const [testCases, setTestCases] = useState([
     { input: "", expectedOutput: "" },
   ])
+  const [generating, setGenerating] = useState(false)
+  const [difficulty, setDifficulty] = useState("medium")
 
   const isHostRef = useRef(false)
 
@@ -134,6 +136,30 @@ export default function RoomPage() {
     }
   }
 
+  const handleGenerate = async () => {
+    setGenerating(true)
+    setError(null)
+    try {
+      const response = await axiosInstance.post(
+        `/api/rooms/${code}/rounds/generate?difficulty=${difficulty}`
+      )
+      setProblemTitle(response.data.title)
+      setProblemDescription(response.data.description)
+      setTestCases(
+        response.data.testCases.map(
+          (tc: { input: string; output: string }) => ({
+            input: tc.input,
+            expectedOutput: tc.output,
+          })
+        )
+      )
+    } catch {
+      setError("Failed to generate question. Please try again.")
+    } finally {
+      setGenerating(false)
+    }
+  }
+
   if (loading)
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -154,9 +180,13 @@ export default function RoomPage() {
 
       {/* Navbar */}
       <div className="relative z-10 flex items-center justify-between border-b border-border bg-card/50 px-6 py-4 backdrop-blur-sm">
-        <h1 className="text-xl font-bold tracking-tight text-primary">CodeDuel</h1>
+        <h1 className="text-xl font-bold tracking-tight text-primary">
+          CodeDuel
+        </h1>
         <div className="flex items-center gap-2">
-          <span className="text-sm tracking-widest text-muted-foreground">$ room_code:</span>
+          <span className="text-sm tracking-widest text-muted-foreground">
+            $ room_code:
+          </span>
           <span
             className="cursor-pointer bg-primary/10 px-3 py-1 font-mono font-bold tracking-widest text-primary transition hover:bg-primary/20"
             onClick={() => navigator.clipboard.writeText(code!)}
@@ -188,7 +218,9 @@ export default function RoomPage() {
                   key={p.username}
                   className="flex items-center justify-between"
                 >
-                  <span className="text-sm font-medium text-foreground">{p.username}</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {p.username}
+                  </span>
                   {p.role === "ROLE_HOST" && (
                     <span className="border border-primary px-2 py-0.5 text-xs text-primary">
                       HOST
@@ -212,10 +244,33 @@ export default function RoomPage() {
               ].map((cls, i) => (
                 <div key={i} className={`hacker-corner ${cls}`} />
               ))}
-              <h2 className="text-lg font-semibold tracking-wide text-primary">SET_UP_ROUND</h2>
+              <h2 className="text-lg font-semibold tracking-wide text-primary">
+                SET_UP_ROUND
+              </h2>
+
+              <div className="flex items-center gap-3">
+                <select
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                  className="rounded-sm border border-border bg-input px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                >
+                  <option value="easy">easy</option>
+                  <option value="medium">medium</option>
+                  <option value="hard">hard</option>
+                </select>
+                <button
+                  onClick={handleGenerate}
+                  disabled={generating}
+                  className="hacker-btn-secondary flex-1"
+                >
+                  {generating ? "GENERATING..." : "⚡ GENERATE_WITH_AI"}
+                </button>
+              </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-muted-foreground">$ problem_title</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  $ problem_title
+                </label>
                 <input
                   type="text"
                   value={problemTitle}
@@ -238,7 +293,9 @@ export default function RoomPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-muted-foreground">$ time_limit</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  $ time_limit
+                </label>
                 <select
                   value={timeLimitSeconds}
                   onChange={(e) => setTimeLimitSeconds(Number(e.target.value))}
@@ -255,10 +312,12 @@ export default function RoomPage() {
               {/* Test Cases */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-muted-foreground">$ test_cases</label>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    $ test_cases
+                  </label>
                   <button
                     onClick={addTestCase}
-                    className="text-xs tracking-widest text-primary hover:underline font-bold"
+                    className="text-xs font-bold tracking-widest text-primary hover:underline"
                   >
                     + ADD_CASE
                   </button>
@@ -276,7 +335,7 @@ export default function RoomPage() {
                         onChange={(e) =>
                           updateTestCase(index, "input", e.target.value)
                         }
-                        className="rounded-sm border border-border bg-input px-3 py-1.5 text-sm font-mono text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                        className="rounded-sm border border-border bg-input px-3 py-1.5 font-mono text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                         placeholder="INPUT"
                       />
                       <input
@@ -289,14 +348,14 @@ export default function RoomPage() {
                             e.target.value
                           )
                         }
-                        className="rounded-sm border border-border bg-input px-3 py-1.5 text-sm font-mono text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                        className="rounded-sm border border-border bg-input px-3 py-1.5 font-mono text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                         placeholder="EXPECTED_OUTPUT"
                       />
                     </div>
                     {testCases.length > 1 && (
                       <button
                         onClick={() => removeTestCase(index)}
-                        className="text-sm text-destructive hover:opacity-70 mt-1"
+                        className="mt-1 text-sm text-destructive hover:opacity-70"
                       >
                         [X]
                       </button>
@@ -326,8 +385,9 @@ export default function RoomPage() {
                 <div key={i} className={`hacker-corner ${cls}`} />
               ))}
               <div className="text-center">
-                <p className="text-lg font-bold tracking-widest text-primary animate-pulse">
-                  <span className="text-muted-foreground">&gt;</span> WAITING_FOR_HOST...
+                <p className="animate-pulse text-lg font-bold tracking-widest text-primary">
+                  <span className="text-muted-foreground">&gt;</span>{" "}
+                  WAITING_FOR_HOST...
                 </p>
               </div>
             </div>

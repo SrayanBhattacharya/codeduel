@@ -6,6 +6,13 @@ A real-time multiplayer competitive coding platform inspired by Scribble.io. A h
 
 ---
 
+## ⚠️ Notes
+
+- Backend may take 30–60 seconds to wake (free-tier hosting)
+- Code execution service is limited due to cloud constraints
+
+---
+
 ## Features
 
 - JWT-based authentication (register/login)

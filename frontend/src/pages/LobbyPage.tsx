@@ -74,44 +74,53 @@ export default function LobbyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div className="hacker-grid" />
+      
       {/* Navbar */}
-      <div className="flex items-center justify-between border-b border-border px-6 py-4">
-        <h1 className="text-xl font-bold">CodeDuel</h1>
+      <div className="relative z-10 flex items-center justify-between border-b border-border bg-card/50 px-6 py-4 backdrop-blur-sm">
+        <h1 className="text-xl font-bold tracking-tight text-primary">CodeDuel</h1>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">
-            Welcome,{" "}
-            <span className="font-medium text-foreground">
-              {user?.username}
-            </span>
+          <span className="text-sm tracking-widest text-muted-foreground">
+            <span className="text-foreground">~/{user?.username}</span> $
           </span>
           <button
             onClick={handleLogout}
-            className="rounded-lg border border-border px-3 py-1.5 text-sm transition hover:bg-accent"
+            className="hacker-btn-secondary py-1.5 px-4 text-xs"
           >
-            Logout
+            LOGOUT
           </button>
         </div>
       </div>
 
       {/* Main */}
-      <div className="flex flex-col items-center justify-center gap-6 px-4 py-16">
-        <h2 className="text-3xl font-bold">Ready to duel?</h2>
-        <p className="text-muted-foreground">
-          Create a room or join an existing one
-        </p>
+      <div className="relative z-10 flex flex-col items-center justify-center gap-6 px-4 py-16">
+        <div className="text-center">
+          <p className="mb-2 text-sm tracking-widest text-primary">
+            <span className="text-muted-foreground">~/codeduel $</span> ./start.sh
+          </p>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">SELECT_MODE</h2>
+        </div>
 
         <div className="flex w-full max-w-2xl gap-4">
           {/* Create Room */}
-          <div className="flex flex-1 flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
-            <h3 className="text-lg font-semibold">Create Room</h3>
+          <div className="hacker-panel flex flex-1 flex-col gap-4">
+            {[
+              "top-[-1px] left-[-1px] border-t border-l",
+              "top-[-1px] right-[-1px] border-t border-r",
+              "bottom-[-1px] left-[-1px] border-b border-l",
+              "bottom-[-1px] right-[-1px] border-b border-r",
+            ].map((cls, i) => (
+              <div key={i} className={`hacker-corner ${cls}`} />
+            ))}
+            <h3 className="text-lg font-semibold tracking-wide text-foreground">CREATE ROOM</h3>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium">Max Players</label>
+              <label className="text-sm font-medium text-muted-foreground">$ max_players</label>
               <select
                 value={maxPlayers}
                 onChange={(e) => setMaxPlayers(Number(e.target.value))}
-                className="rounded-lg border border-border bg-background px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none"
+                className="rounded-sm border border-border bg-input px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               >
                 {[2, 3, 4, 5, 6].map((n) => (
                   <option key={n} value={n}>
@@ -128,23 +137,31 @@ export default function LobbyPage() {
             <button
               onClick={handleCreate}
               disabled={createLoading}
-              className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+              className="hacker-btn-primary mt-auto"
             >
-              {createLoading ? "Creating..." : "Create Room"}
+              {createLoading ? "CREATING..." : "CREATE"}
             </button>
           </div>
 
           {/* Join Room */}
-          <div className="flex flex-1 flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
-            <h3 className="text-lg font-semibold">Join Room</h3>
+          <div className="hacker-panel flex flex-1 flex-col gap-4">
+            {[
+              "top-[-1px] left-[-1px] border-t border-l",
+              "top-[-1px] right-[-1px] border-t border-r",
+              "bottom-[-1px] left-[-1px] border-b border-l",
+              "bottom-[-1px] right-[-1px] border-b border-r",
+            ].map((cls, i) => (
+              <div key={i} className={`hacker-corner ${cls}`} />
+            ))}
+            <h3 className="text-lg font-semibold tracking-wide text-foreground">JOIN ROOM</h3>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium">Room Code</label>
+              <label className="text-sm font-medium text-muted-foreground">$ room_code</label>
               <input
                 type="text"
                 value={roomCode}
                 onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                className="rounded-lg border border-border bg-background px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none"
+                className="rounded-sm border border-border bg-input px-3 py-2 font-mono text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                 placeholder="Enter room code"
               />
             </div>
@@ -156,9 +173,9 @@ export default function LobbyPage() {
             <button
               onClick={handleJoin}
               disabled={joinLoading || roomCode.trim() === ""}
-              className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+              className="hacker-btn-primary mt-auto"
             >
-              {joinLoading ? "Joining..." : "Join Room"}
+              {joinLoading ? "JOINING..." : "JOIN"}
             </button>
           </div>
         </div>

@@ -41,30 +41,52 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-sm">
-        <h1 className="mb-6 text-center text-2xl font-bold">Welcome back</h1>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
+      <div className="hacker-grid" />
+
+      <div className="hacker-panel w-full max-w-md">
+        {[
+          "top-[-1px] left-[-1px] border-t border-l",
+          "top-[-1px] right-[-1px] border-t border-r",
+          "bottom-[-1px] left-[-1px] border-b border-l",
+          "bottom-[-1px] right-[-1px] border-b border-r",
+        ].map((cls, i) => (
+          <div key={i} className={`hacker-corner ${cls}`} />
+        ))}
+
+        <div className="mb-8 text-center">
+          <p className="mb-2 text-sm tracking-widest text-primary">
+            <span className="text-muted-foreground">~/codeduel $</span> ./login.sh
+          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            Authenticate
+          </h1>
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">Username</label>
+            <label className="text-sm font-medium text-muted-foreground">
+              $ username
+            </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="rounded-lg border border-border bg-background px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none"
+              className="rounded-sm border border-border bg-input px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               placeholder="Enter your username"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium">Password</label>
+            <label className="text-sm font-medium text-muted-foreground">
+              $ password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="rounded-lg border border-border bg-background px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none"
+              className="rounded-sm border border-border bg-input px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               placeholder="Enter your password"
               required
             />
@@ -77,9 +99,9 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+            className="hacker-btn-primary mt-4 w-full"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "AUTHENTICATING..." : "LOGIN"}
           </button>
         </form>
 

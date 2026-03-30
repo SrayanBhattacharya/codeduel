@@ -68,20 +68,22 @@ export default function LeaderboardPage() {
     )
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div className="hacker-grid" />
+
       {/* Navbar */}
-      <div className="flex items-center justify-between border-b border-border px-6 py-4">
-        <h1 className="text-xl font-bold">CodeDuel</h1>
+      <div className="relative z-10 flex items-center justify-between border-b border-border bg-card/50 px-6 py-4 backdrop-blur-sm">
+        <h1 className="text-xl font-bold tracking-tight text-primary">CodeDuel</h1>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Room:</span>
-          <span className="font-mono font-bold">{code}</span>
+          <span className="text-sm tracking-widest text-muted-foreground">$ room:</span>
+          <span className="font-mono font-bold text-foreground">{code}</span>
         </div>
       </div>
 
-      <div className="mx-auto max-w-lg px-4 py-12">
-        <h2 className="mb-2 text-center text-3xl font-bold">Leaderboard</h2>
-        <p className="mb-8 text-center text-sm text-muted-foreground">
-          Round finished — final scores
+      <div className="relative z-10 mx-auto max-w-lg px-4 py-12">
+        <h2 className="mb-2 text-center text-3xl font-bold tracking-tight text-foreground">&gt; VIEW_LEADERBOARD</h2>
+        <p className="mb-8 text-center text-sm font-mono tracking-widest text-muted-foreground">
+          // ROUND_FINISHED : FINAL_SCORES
         </p>
 
         {error && (
@@ -92,47 +94,48 @@ export default function LeaderboardPage() {
           {leaderboard.map((entry, index) => (
             <div
               key={entry.username}
-              className={`flex items-center justify-between rounded-2xl border px-6 py-4 shadow-sm transition ${entry.username === user?.username ? "border-primary bg-primary/5" : "border-border bg-card"} ${index === 0 ? "scale-105" : ""} `}
+              className={`flex items-center justify-between rounded-sm border px-6 py-4 transition ${entry.username === user?.username ? "border-primary bg-primary/10" : "border-border bg-input/50"} ${index === 0 ? "scale-105 shadow-[0_0_15px_rgba(0,255,136,0.1)]" : ""} `}
             >
               <div className="flex items-center gap-4">
-                <span className="w-8 text-center text-xl">
+                <span className="w-8 text-center font-mono text-xl text-primary">
                   {getRankEmoji(index)}
                 </span>
-                <span className="font-medium">
+                <span className="font-medium font-mono text-foreground">
                   {entry.username}
                   {entry.username === user?.username && (
-                    <span className="ml-2 text-xs text-primary">(you)</span>
+                    <span className="ml-2 text-xs tracking-widest text-primary">(YOU)</span>
                   )}
                 </span>
               </div>
-              <span className="font-mono text-lg font-bold">
+              <span className="font-mono text-lg font-bold text-foreground">
                 {entry.totalScore} pts
               </span>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 hidden justify-center">
+          {/* Kept hidden just in case it was used for single button layout */}
           <button
             onClick={() => navigate(`/room/${code}`)}
-            className="rounded-lg bg-primary px-8 py-2.5 font-medium text-primary-foreground transition hover:opacity-90"
+            className="hacker-btn-primary"
           >
-            Next Round
+            NEXT_ROUND
           </button>
         </div>
 
         <div className="mt-8 flex justify-center gap-4">
           <button
             onClick={() => navigate("/lobby")}
-            className="rounded-lg border border-border px-8 py-2.5 font-medium transition hover:bg-accent"
+            className="hacker-btn-secondary"
           >
-            Back to Lobby
+            &lt; LOBBY
           </button>
           <button
             onClick={() => navigate(`/room/${code}`)}
-            className="rounded-lg bg-primary px-8 py-2.5 font-medium text-primary-foreground transition hover:opacity-90"
+            className="hacker-btn-primary"
           >
-            Next Round
+            NEXT_ROUND &gt;
           </button>
         </div>
       </div>

@@ -48,83 +48,70 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-:root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+:root, .dark {
+    --background: #0a0a0a;
+    --foreground: #e0e0e0;
+    --card: #111;
+    --card-foreground: #e0e0e0;
+    --popover: #111;
+    --popover-foreground: #e0e0e0;
+    --primary: #00ff88;
+    --primary-foreground: #0a0a0a;
+    --secondary: transparent;
+    --secondary-foreground: #00ff88;
+    --muted: #111;
+    --muted-foreground: #888;
+    --accent: #111;
+    --accent-foreground: #00ff88;
+    --destructive: #ff4444;
+    --border: #333;
+    --input: #111;
+    --ring: #00ff88;
+    --chart-1: #00ff88;
+    --chart-2: #00cc6e;
+    --chart-3: #009955;
+    --chart-4: #006633;
+    --chart-5: #003311;
+    --radius: 2px;
+    --sidebar: #111;
+    --sidebar-foreground: #e0e0e0;
+    --sidebar-primary: #00ff88;
+    --sidebar-primary-foreground: #0a0a0a;
+    --sidebar-accent: #111;
+    --sidebar-accent-foreground: #00ff88;
+    --sidebar-border: #333;
+    --sidebar-ring: #00ff88;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
-    @apply bg-background text-foreground;
-    }
-  html {
-    @apply font-sans;
-    }
+    @apply bg-background text-foreground font-mono;
+  }
+}
+
+/* Common UI Utilities for Hacker Theme */
+.hacker-grid {
+  @apply pointer-events-none absolute inset-0 z-0;
+  background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hacker-corner {
+  @apply absolute h-5 w-5 border-[#1a1a1a];
+}
+
+.hacker-panel {
+  @apply relative z-10 rounded-sm border border-border bg-card p-6 shadow-sm;
+}
+
+.hacker-btn-primary {
+  @apply rounded-sm bg-primary px-8 py-3 text-sm font-bold tracking-widest text-[#0a0a0a] transition-all hover:-translate-y-0.5 hover:bg-[#00cc6e];
+}
+
+.hacker-btn-secondary {
+  @apply rounded-sm border border-primary px-8 py-3 text-sm tracking-widest text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/10 bg-transparent;
 }

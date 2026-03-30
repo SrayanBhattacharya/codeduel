@@ -148,16 +148,18 @@ export default function GamePage() {
     )
 
   return (
-    <div className="flex h-screen flex-col bg-background">
+    <div className="relative flex h-screen flex-col overflow-hidden bg-background">
+      <div className="hacker-grid" />
+
       {/* Navbar */}
-      <div className="flex items-center justify-between border-b border-border px-6 py-3">
-        <h1 className="text-xl font-bold">CodeDuel</h1>
+      <div className="relative z-10 flex items-center justify-between border-b border-border bg-card/50 px-6 py-3 backdrop-blur-sm">
+        <h1 className="text-xl font-bold tracking-tight text-primary">CodeDuel</h1>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">
-            {user?.username}
+          <span className="text-sm tracking-widest text-muted-foreground">
+            ~/<span className="text-foreground">{user?.username}</span> $
           </span>
           <div
-            className={`font-mono text-lg font-bold ${timeLeft !== null && timeLeft <= 30 ? "text-destructive" : "text-foreground"}`}
+            className={`font-mono text-lg font-bold tracking-widest ${timeLeft !== null && timeLeft <= 30 ? "animate-pulse text-destructive" : "text-primary"}`}
           >
             {timeLeft !== null ? formatTime(timeLeft) : "--:--"}
           </div>
@@ -165,31 +167,31 @@ export default function GamePage() {
       </div>
 
       {/* Main */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="relative z-10 flex flex-1 overflow-hidden">
         {/* Left — Problem */}
-        <div className="w-96 flex-shrink-0 overflow-y-auto border-r border-border p-6">
-          <h2 className="mb-2 text-xl font-bold">{round.problemTitle}</h2>
-          <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
+        <div className="hacker-panel flex w-96 flex-shrink-0 flex-col overflow-y-auto border-r border-t-0 border-b-0 border-l-0 border-border rounded-none p-6 shadow-none">
+          <h2 className="mb-2 text-xl font-bold tracking-wide text-foreground">&gt; {round.problemTitle}</h2>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
             {round.problemDescription}
           </p>
 
           <div className="mt-6">
-            <h3 className="mb-3 text-sm font-semibold">Test Cases</h3>
+            <h3 className="mb-3 text-sm font-semibold tracking-widest text-muted-foreground">$ TEST_CASES</h3>
             <div className="flex flex-col gap-3">
               {round.testCases.map((tc, index) => (
                 <div
                   key={tc.id}
-                  className="rounded-lg border border-border bg-card p-3"
+                  className="rounded-sm border border-border bg-input/50 p-3"
                 >
-                  <p className="mb-1 text-xs text-muted-foreground">
-                    Case {index + 1}
+                  <p className="mb-1 text-xs font-bold tracking-widest text-muted-foreground">
+                    CASE_0{index + 1}
                   </p>
-                  <p className="font-mono text-xs">
-                    <span className="text-muted-foreground">Input:</span>{" "}
+                  <p className="font-mono text-xs text-foreground">
+                    <span className="text-muted-foreground">INPUT: </span>{" "}
                     {tc.input}
                   </p>
-                  <p className="font-mono text-xs">
-                    <span className="text-muted-foreground">Expected:</span>{" "}
+                  <p className="font-mono text-xs text-foreground mt-1">
+                    <span className="text-muted-foreground">EXPECTED: </span>{" "}
                     {tc.expectedOutput}
                   </p>
                 </div>
@@ -200,45 +202,47 @@ export default function GamePage() {
           {/* Submission result */}
           {submission && (
             <div
-              className={`mt-6 rounded-lg border p-4 ${submission.testCasesPassed === submission.totalTestCases ? "border-green-500 bg-green-500/10" : "border-yellow-500 bg-yellow-500/10"}`}
+              className={`mt-6 rounded-sm border p-4 ${submission.testCasesPassed === submission.totalTestCases ? "border-primary bg-primary/10 text-primary" : "border-destructive bg-destructive/10 text-destructive"}`}
             >
-              <p className="font-semibold">
+              <p className="font-bold tracking-widest">
                 {submission.testCasesPassed === submission.totalTestCases
-                  ? "✅ All tests passed!"
-                  : "⚠️ Partial pass"}
+                  ? "[+] ALL_TESTS_PASSED"
+                  : "[-] PARTIAL_PASS"}
               </p>
-              <p className="mt-1 text-sm">
-                {submission.testCasesPassed}/{submission.totalTestCases} test
-                cases passed
+              <p className="mt-1 text-sm font-mono">
+                &gt; {submission.testCasesPassed}/{submission.totalTestCases} cases passed
               </p>
-              <p className="text-sm">+{submission.pointsEarned} points</p>
+              <p className="text-sm font-mono mt-1">&gt; +{submission.pointsEarned} pts</p>
             </div>
           )}
 
-          {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
+          {error && <p className="mt-4 text-sm font-bold tracking-widest text-destructive">[-] {error}</p>}
         </div>
 
         {/* Right — Editor */}
-        <div className="flex flex-1 flex-col">
-          <div className="flex items-center justify-between border-b border-border px-4 py-2">
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
-            >
-              {SUPPORTED_LANGUAGES.map((lang) => (
-                <option key={lang.value} value={lang.value}>
-                  {lang.label}
-                </option>
-              ))}
-            </select>
+        <div className="flex flex-1 flex-col bg-[#0a0a0a]">
+          <div className="flex items-center justify-between border-b border-border bg-card/30 px-4 py-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold tracking-widest text-muted-foreground">$ lang</span>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="rounded-sm border border-border bg-input px-3 py-1.5 text-sm font-mono text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              >
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <option key={lang.value} value={lang.value}>
+                    {lang.label.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <button
               onClick={handleSubmit}
               disabled={submitting || timeLeft === 0}
-              className="rounded-lg bg-primary px-6 py-1.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+              className="hacker-btn-primary py-1.5 px-6 rounded-sm text-xs"
             >
-              {submitting ? "Submitting..." : "Submit"}
+              {submitting ? "SUBMITTING..." : "EXECUTE"}
             </button>
           </div>
 

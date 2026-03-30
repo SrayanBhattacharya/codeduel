@@ -7,6 +7,11 @@ const taglines = [
   "Your git blame, my trophy.",
   "Leetcode was just practice.",
   "while(alive) { compete(); }",
+  "99 bugs in the code, take one down, 127 left.",
+  "Works on my machine.",
+  "Turning coffee into questionable solutions.",
+  "If it compiles, it's a feature.",
+  "Semicolons save lives.",
 ]
 
 export default function HomePage() {

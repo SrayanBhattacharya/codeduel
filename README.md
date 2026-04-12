@@ -9,7 +9,7 @@ A real-time multiplayer competitive coding platform inspired by Scribble.io. A h
 ## ⚠️ Notes
 
 - Backend may take 30–60 seconds to wake (free-tier hosting)
-- Code execution service is limited due to cloud constraints
+- Code execution is powered by a self-hosted Piston instance running locally, exposed via Cloudflare Tunnel — requires the host machine to be online
 
 ---
 
@@ -18,6 +18,7 @@ A real-time multiplayer competitive coding platform inspired by Scribble.io. A h
 - JWT-based authentication (register/login)
 - Create and join rooms with unique room codes
 - Host sets up coding challenges with custom test cases and time limits
+- AI-generated coding challenges via Gemini API — host can auto-generate problems and test cases
 - Real-time participant updates via WebSocket
 - Monaco Editor (VS Code) for writing code in the browser
 - Code execution via [Piston API](https://github.com/engineer-man/piston) — supports Python, Java, C, C++
@@ -37,8 +38,9 @@ A real-time multiplayer competitive coding platform inspired by Scribble.io. A h
 | Spring Security + JWT   | Authentication and route protection |
 | Spring Data JPA         | Database ORM                        |
 | WebSocket (STOMP)       | Real-time communication             |
-| PostgreSQL              | Primary database                    |
+| PostgreSQL (Supabase)   | Primary database                    |
 | Piston API              | Sandboxed code execution            |
+| Gemini API              | AI-generated coding challenges      |
 
 ### Frontend
 
@@ -72,6 +74,15 @@ com.codeduel.backend/
 └── util/            # Piston client, room code generator
 ```
 
+### Deployment
+
+| Component      | Platform                                           |
+| -------------- | -------------------------------------------------- |
+| Frontend       | Vercel                                             |
+| Backend        | Render (free tier)                                 |
+| Database       | Supabase (PostgreSQL)                              |
+| Code Execution | Piston (self-hosted locally via Cloudflare Tunnel) |
+
 ---
 
 ## API Reference
@@ -96,11 +107,12 @@ com.codeduel.backend/
 
 ### Rounds
 
-| Method | Endpoint                              | Description                | Auth |
-| ------ | ------------------------------------- | -------------------------- | ---- |
-| POST   | `/api/rooms/{code}/rounds`            | Create a round (host only) | ✅   |
-| POST   | `/api/rooms/{code}/rounds/{id}/start` | Start a round (host only)  | ✅   |
-| GET    | `/api/rooms/{code}/rounds`            | Get all rounds in a room   | ✅   |
+| Method | Endpoint                              | Description                   | Auth |
+| ------ | ------------------------------------- | ----------------------------- | ---- |
+| POST   | `/api/rooms/{code}/rounds`            | Create a round (host only)    | ✅   |
+| POST   | `/api/rooms/{code}/rounds/{id}/start` | Start a round (host only)     | ✅   |
+| GET    | `/api/rooms/{code}/rounds`            | Get all rounds in a room      | ✅   |
+| POST   | `/api/rooms/{code}/rounds/generate`   | AI generate a question (host) | ✅   |
 
 ### Submissions
 

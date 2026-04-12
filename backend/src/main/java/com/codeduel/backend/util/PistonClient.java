@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -20,6 +19,9 @@ public class PistonClient {
     @PostConstruct
     public void init() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(5000);
+
         this.restClient = RestClient.builder()
                 .baseUrl(pistonApiUrl)
                 .requestFactory(factory)
@@ -27,11 +29,17 @@ public class PistonClient {
     }
 
     public String execute(String language, String code, String stdin) {
+
+        if (code == null || code.length() > 5000) {
+            throw new RuntimeException("Invalid code length");
+        }
+
         PistonRequest request = new PistonRequest(
                 language,
                 "*",
                 List.of(new PistonFile(code)),
-                stdin
+                stdin,
+                5000
         );
 
         PistonResponse response = restClient.post()
@@ -45,6 +53,9 @@ public class PistonClient {
             throw new RuntimeException("Piston returned null response");
         }
 
+        if (response.run().stderr() != null && !response.run().stderr().isEmpty()) {
+            return response.run().stderr();
+        }
         return response.run().stdout();
     }
 
@@ -52,7 +63,8 @@ public class PistonClient {
             String language,
             String version,
             List<PistonFile> files,
-            String stdin
+            String stdin,
+            Integer run_timeout
     ) {}
 
     private record PistonFile(String content) {}

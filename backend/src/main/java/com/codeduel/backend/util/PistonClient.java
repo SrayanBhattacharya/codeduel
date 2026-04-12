@@ -39,7 +39,7 @@ public class PistonClient {
                 "*",
                 List.of(new PistonFile(code)),
                 stdin,
-                5000
+                3000
         );
 
         PistonResponse response = restClient.post()

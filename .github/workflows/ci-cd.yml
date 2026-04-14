@@ -1,0 +1,29 @@
+name: CodeDuel CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker images
+        run: docker compose --env-file ~/codeduel/.env build
+        env:
+          VITE_API_BASE_URL: http://localhost
+
+  cd:
+    runs-on: self-hosted
+    needs: ci
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy with Docker compose
+        run: |
+          docker compose --env-file ~/codeduel/.env down
+          docker compose --env-file ~/codeduel/.env up --build -d

@@ -20,11 +20,9 @@ export default function LobbyPage() {
   useEffect(() => {
     const leaveCurrentRoom = async () => {
       try {
-        const response = await axiosInstance.get("/api/rooms/current")
+        const response = await axiosInstance.get("/rooms/current")
         if (response.status === 200 && response.data.roomCode) {
-          await axiosInstance.delete(
-            `/api/rooms/${response.data.roomCode}/leave`
-          )
+          await axiosInstance.delete(`/rooms/${response.data.roomCode}/leave`)
         }
       } catch {
         // no active room, ignore
@@ -37,7 +35,7 @@ export default function LobbyPage() {
     setCreateError(null)
     setCreateLoading(true)
     try {
-      const response = await axiosInstance.post("/api/rooms", { maxPlayers })
+      const response = await axiosInstance.post("/rooms", { maxPlayers })
       navigate(`/room/${response.data.roomCode}`)
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.status === 400) {
@@ -54,7 +52,7 @@ export default function LobbyPage() {
     setJoinError(null)
     setJoinLoading(true)
     try {
-      await axiosInstance.post(`/api/rooms/${roomCode}/join`)
+      await axiosInstance.post(`/rooms/${roomCode}/join`)
       navigate(`/room/${roomCode}`)
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -76,17 +74,19 @@ export default function LobbyPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="hacker-grid" />
-      
+
       {/* Navbar */}
       <div className="relative z-10 flex items-center justify-between border-b border-border bg-card/50 px-6 py-4 backdrop-blur-sm">
-        <h1 className="text-xl font-bold tracking-tight text-primary">CodeDuel</h1>
+        <h1 className="text-xl font-bold tracking-tight text-primary">
+          CodeDuel
+        </h1>
         <div className="flex items-center gap-4">
           <span className="text-sm tracking-widest text-muted-foreground">
             <span className="text-foreground">~/{user?.username}</span> $
           </span>
           <button
             onClick={handleLogout}
-            className="hacker-btn-secondary py-1.5 px-4 text-xs"
+            className="hacker-btn-secondary px-4 py-1.5 text-xs"
           >
             LOGOUT
           </button>
@@ -97,9 +97,12 @@ export default function LobbyPage() {
       <div className="relative z-10 flex flex-col items-center justify-center gap-6 px-4 py-16">
         <div className="text-center">
           <p className="mb-2 text-sm tracking-widest text-primary">
-            <span className="text-muted-foreground">~/codeduel $</span> ./start.sh
+            <span className="text-muted-foreground">~/codeduel $</span>{" "}
+            ./start.sh
           </p>
-          <h2 className="text-3xl font-bold tracking-tight text-foreground">SELECT_MODE</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">
+            SELECT_MODE
+          </h2>
         </div>
 
         <div className="flex w-full max-w-2xl gap-4">
@@ -113,10 +116,14 @@ export default function LobbyPage() {
             ].map((cls, i) => (
               <div key={i} className={`hacker-corner ${cls}`} />
             ))}
-            <h3 className="text-lg font-semibold tracking-wide text-foreground">CREATE ROOM</h3>
+            <h3 className="text-lg font-semibold tracking-wide text-foreground">
+              CREATE ROOM
+            </h3>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-muted-foreground">$ max_players</label>
+              <label className="text-sm font-medium text-muted-foreground">
+                $ max_players
+              </label>
               <select
                 value={maxPlayers}
                 onChange={(e) => setMaxPlayers(Number(e.target.value))}
@@ -153,10 +160,14 @@ export default function LobbyPage() {
             ].map((cls, i) => (
               <div key={i} className={`hacker-corner ${cls}`} />
             ))}
-            <h3 className="text-lg font-semibold tracking-wide text-foreground">JOIN ROOM</h3>
+            <h3 className="text-lg font-semibold tracking-wide text-foreground">
+              JOIN ROOM
+            </h3>
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-muted-foreground">$ room_code</label>
+              <label className="text-sm font-medium text-muted-foreground">
+                $ room_code
+              </label>
               <input
                 type="text"
                 value={roomCode}

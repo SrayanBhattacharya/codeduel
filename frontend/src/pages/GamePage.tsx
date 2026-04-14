@@ -49,7 +49,7 @@ export default function GamePage() {
     }
     const fetchRound = async () => {
       try {
-        const response = await axiosInstance.get(`/api/rooms/${code}/rounds`)
+        const response = await axiosInstance.get(`/rooms/${code}/rounds`)
         const rounds: Round[] = response.data
         const activeRound = rounds.find((r) => r.status === "ACTIVE")
         if (activeRound) {
@@ -129,7 +129,7 @@ export default function GamePage() {
 
     try {
       const response = await axiosInstance.post(
-        `/api/rooms/${code}/rounds/${round.id}/submit`,
+        `/rooms/${code}/rounds/${round.id}/submit`,
         { language, code: editorCode }
       )
       setSubmission(response.data)
@@ -153,7 +153,9 @@ export default function GamePage() {
 
       {/* Navbar */}
       <div className="relative z-10 flex items-center justify-between border-b border-border bg-card/50 px-6 py-3 backdrop-blur-sm">
-        <h1 className="text-xl font-bold tracking-tight text-primary">CodeDuel</h1>
+        <h1 className="text-xl font-bold tracking-tight text-primary">
+          CodeDuel
+        </h1>
         <div className="flex items-center gap-4">
           <span className="text-sm tracking-widest text-muted-foreground">
             ~/<span className="text-foreground">{user?.username}</span> $
@@ -169,14 +171,18 @@ export default function GamePage() {
       {/* Main */}
       <div className="relative z-10 flex flex-1 overflow-hidden">
         {/* Left — Problem */}
-        <div className="hacker-panel flex w-96 flex-shrink-0 flex-col overflow-y-auto border-r border-t-0 border-b-0 border-l-0 border-border rounded-none p-6 shadow-none">
-          <h2 className="mb-2 text-xl font-bold tracking-wide text-foreground">&gt; {round.problemTitle}</h2>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+        <div className="hacker-panel flex w-96 flex-shrink-0 flex-col overflow-y-auto rounded-none border-t-0 border-r border-b-0 border-l-0 border-border p-6 shadow-none">
+          <h2 className="mb-2 text-xl font-bold tracking-wide text-foreground">
+            &gt; {round.problemTitle}
+          </h2>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
             {round.problemDescription}
           </p>
 
           <div className="mt-6">
-            <h3 className="mb-3 text-sm font-semibold tracking-widest text-muted-foreground">$ TEST_CASES</h3>
+            <h3 className="mb-3 text-sm font-semibold tracking-widest text-muted-foreground">
+              $ TEST_CASES
+            </h3>
             <div className="flex flex-col gap-3">
               {round.testCases.map((tc, index) => (
                 <div
@@ -190,7 +196,7 @@ export default function GamePage() {
                     <span className="text-muted-foreground">INPUT: </span>{" "}
                     {tc.input}
                   </p>
-                  <p className="font-mono text-xs text-foreground mt-1">
+                  <p className="mt-1 font-mono text-xs text-foreground">
                     <span className="text-muted-foreground">EXPECTED: </span>{" "}
                     {tc.expectedOutput}
                   </p>
@@ -209,25 +215,34 @@ export default function GamePage() {
                   ? "[+] ALL_TESTS_PASSED"
                   : "[-] PARTIAL_PASS"}
               </p>
-              <p className="mt-1 text-sm font-mono">
-                &gt; {submission.testCasesPassed}/{submission.totalTestCases} cases passed
+              <p className="mt-1 font-mono text-sm">
+                &gt; {submission.testCasesPassed}/{submission.totalTestCases}{" "}
+                cases passed
               </p>
-              <p className="text-sm font-mono mt-1">&gt; +{submission.pointsEarned} pts</p>
+              <p className="mt-1 font-mono text-sm">
+                &gt; +{submission.pointsEarned} pts
+              </p>
             </div>
           )}
 
-          {error && <p className="mt-4 text-sm font-bold tracking-widest text-destructive">[-] {error}</p>}
+          {error && (
+            <p className="mt-4 text-sm font-bold tracking-widest text-destructive">
+              [-] {error}
+            </p>
+          )}
         </div>
 
         {/* Right — Editor */}
         <div className="flex flex-1 flex-col bg-[#0a0a0a]">
           <div className="flex items-center justify-between border-b border-border bg-card/30 px-4 py-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold tracking-widest text-muted-foreground">$ lang</span>
+              <span className="text-xs font-bold tracking-widest text-muted-foreground">
+                $ lang
+              </span>
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="rounded-sm border border-border bg-input px-3 py-1.5 text-sm font-mono text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                className="rounded-sm border border-border bg-input px-3 py-1.5 font-mono text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
               >
                 {SUPPORTED_LANGUAGES.map((lang) => (
                   <option key={lang.value} value={lang.value}>
@@ -240,7 +255,7 @@ export default function GamePage() {
             <button
               onClick={handleSubmit}
               disabled={submitting || timeLeft === 0}
-              className="hacker-btn-primary py-1.5 px-6 rounded-sm text-xs"
+              className="hacker-btn-primary rounded-sm px-6 py-1.5 text-xs"
             >
               {submitting ? "SUBMITTING..." : "EXECUTE"}
             </button>

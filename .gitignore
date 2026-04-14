@@ -325,4 +325,7 @@ sketch
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/java,maven,intellij,node,react,visualstudiocode
+# Piston runtime data
+piston/*
+!piston/init.sh
+!piston/Dockerfile

@@ -20,9 +20,7 @@ export default function LeaderboardPage() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/api/rooms/${code}/leaderboard`
-        )
+        const response = await axiosInstance.get(`/rooms/${code}/leaderboard`)
         setLeaderboard(response.data)
       } catch {
         setError("Failed to load leaderboard")
@@ -73,16 +71,22 @@ export default function LeaderboardPage() {
 
       {/* Navbar */}
       <div className="relative z-10 flex items-center justify-between border-b border-border bg-card/50 px-6 py-4 backdrop-blur-sm">
-        <h1 className="text-xl font-bold tracking-tight text-primary">CodeDuel</h1>
+        <h1 className="text-xl font-bold tracking-tight text-primary">
+          CodeDuel
+        </h1>
         <div className="flex items-center gap-2">
-          <span className="text-sm tracking-widest text-muted-foreground">$ room:</span>
+          <span className="text-sm tracking-widest text-muted-foreground">
+            $ room:
+          </span>
           <span className="font-mono font-bold text-foreground">{code}</span>
         </div>
       </div>
 
       <div className="relative z-10 mx-auto max-w-lg px-4 py-12">
-        <h2 className="mb-2 text-center text-3xl font-bold tracking-tight text-foreground">&gt; VIEW_LEADERBOARD</h2>
-        <p className="mb-8 text-center text-sm font-mono tracking-widest text-muted-foreground">
+        <h2 className="mb-2 text-center text-3xl font-bold tracking-tight text-foreground">
+          &gt; VIEW_LEADERBOARD
+        </h2>
+        <p className="mb-8 text-center font-mono text-sm tracking-widest text-muted-foreground">
           // ROUND_FINISHED : FINAL_SCORES
         </p>
 
@@ -100,10 +104,12 @@ export default function LeaderboardPage() {
                 <span className="w-8 text-center font-mono text-xl text-primary">
                   {getRankEmoji(index)}
                 </span>
-                <span className="font-medium font-mono text-foreground">
+                <span className="font-mono font-medium text-foreground">
                   {entry.username}
                   {entry.username === user?.username && (
-                    <span className="ml-2 text-xs tracking-widest text-primary">(YOU)</span>
+                    <span className="ml-2 text-xs tracking-widest text-primary">
+                      (YOU)
+                    </span>
                   )}
                 </span>
               </div>

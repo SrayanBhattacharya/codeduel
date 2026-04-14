@@ -19,7 +19,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const response = await axiosInstance.post("/api/auth/login", {
+      const response = await axiosInstance.post("/auth/login", {
         username,
         password,
       })
@@ -56,7 +56,8 @@ export default function LoginPage() {
 
         <div className="mb-8 text-center">
           <p className="mb-2 text-sm tracking-widest text-primary">
-            <span className="text-muted-foreground">~/codeduel $</span> ./login.sh
+            <span className="text-muted-foreground">~/codeduel $</span>{" "}
+            ./login.sh
           </p>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Authenticate

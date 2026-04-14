@@ -19,7 +19,7 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      const response = await axiosInstance.post("/api/auth/register", {
+      const response = await axiosInstance.post("/auth/register", {
         username,
         password,
       })
@@ -56,7 +56,8 @@ export default function RegisterPage() {
 
         <div className="mb-8 text-center">
           <p className="mb-2 text-sm tracking-widest text-primary">
-            <span className="text-muted-foreground">~/codeduel $</span> ./register.sh
+            <span className="text-muted-foreground">~/codeduel $</span>{" "}
+            ./register.sh
           </p>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Create Account

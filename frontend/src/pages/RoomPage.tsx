@@ -41,7 +41,7 @@ export default function RoomPage() {
   useEffect(() => {
     const fetchRoom = async () => {
       try {
-        const response = await axiosInstance.get(`/api/rooms/${code}`)
+        const response = await axiosInstance.get(`/rooms/${code}`)
         setRoom(response.data)
       } catch {
         setError("Room not found")
@@ -118,17 +118,14 @@ export default function RoomPage() {
     setError(null)
 
     try {
-      const roundResponse = await axiosInstance.post(
-        `/api/rooms/${code}/rounds`,
-        {
-          problemTitle,
-          problemDescription,
-          timeLimitSeconds,
-          testCases,
-        }
-      )
+      const roundResponse = await axiosInstance.post(`/rooms/${code}/rounds`, {
+        problemTitle,
+        problemDescription,
+        timeLimitSeconds,
+        testCases,
+      })
       await axiosInstance.post(
-        `/api/rooms/${code}/rounds/${roundResponse.data.id}/start`
+        `/rooms/${code}/rounds/${roundResponse.data.id}/start`
       )
     } catch {
       setError("Failed to start the game. Please try again.")
@@ -141,7 +138,7 @@ export default function RoomPage() {
     setError(null)
     try {
       const response = await axiosInstance.post(
-        `/api/rooms/${code}/rounds/generate?difficulty=${difficulty}`
+        `/rooms/${code}/rounds/generate?difficulty=${difficulty}`
       )
       setProblemTitle(response.data.title)
       setProblemDescription(response.data.description)
